@@ -997,6 +997,29 @@ export class AssetParams extends BaseModel {
 }
 
 /**
+ * Hash of a block header.
+ */
+export class BlockHashResponse extends BaseModel {
+  /**
+   * Block header hash.
+   */
+  public blockhash: string;
+
+  /**
+   * Creates a new `BlockHashResponse` object.
+   * @param blockhash - Block header hash.
+   */
+  constructor(blockhash: string) {
+    super();
+    this.blockhash = blockhash;
+
+    this.attribute_map = {
+      blockhash: 'blockHash',
+    };
+  }
+}
+
+/**
  * Encoded block object.
  */
 export class BlockResponse extends BaseModel {
