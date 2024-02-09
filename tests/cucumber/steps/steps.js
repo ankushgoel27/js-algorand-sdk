@@ -717,9 +717,11 @@ module.exports = function getSteps(options) {
   });
 
   When('I convert {int} microalgos to algos and back', function (microalgos) {
-    this.microalgos = algosdk
-      .algosToMicroalgos(algosdk.microalgosToAlgos(microalgos))
-      .toString();
+    this.microalgos = new algosdk.AlgoAmount({
+      microAlgos: microalgos,
+    })
+      .toString()
+      .replace('.', '');
   });
 
   Then(

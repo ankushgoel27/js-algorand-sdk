@@ -2,14 +2,9 @@ import * as nacl from './nacl/naclWrappers.js';
 import { Address } from './encoding/address.js';
 import * as encoding from './encoding/encoding.js';
 import { Transaction } from './transaction.js';
-import * as convert from './convert.js';
 import * as utils from './utils/utils.js';
 
 const SIGN_BYTES_PREFIX = Uint8Array.from([77, 88]); // "MX"
-
-// Errors
-export const MULTISIG_BAD_SENDER_ERROR_MSG =
-  'The transaction sender address and multisig preimage do not match.';
 
 /**
  * signTransaction takes an object with either payment or key registration fields and
@@ -83,13 +78,6 @@ export function decodeObj(o: ArrayLike<number>) {
   return encoding.decode(o);
 }
 
-export const ERROR_MULTISIG_BAD_SENDER = new Error(
-  MULTISIG_BAD_SENDER_ERROR_MSG
-);
-export const ERROR_INVALID_MICROALGOS = new Error(
-  convert.INVALID_MICROALGOS_ERROR_MSG
-);
-
 export { AlgodClient as Algodv2 } from './client/v2/algod/algod.js';
 export { KmdClient as Kmd } from './client/kmd.js';
 export { default as IntDecoding } from './types/intDecoding.js';
@@ -136,11 +124,7 @@ export {
   seedFromMnemonic,
   mnemonicFromSeed,
 } from './mnemonic/mnemonic.js';
-export {
-  microalgosToAlgos,
-  algosToMicroalgos,
-  INVALID_MICROALGOS_ERROR_MSG,
-} from './convert.js';
+export { AlgoAmount, AlgoAmountParams } from './convert.js';
 export { computeGroupID, assignGroupID } from './group.js';
 export {
   LogicSig,

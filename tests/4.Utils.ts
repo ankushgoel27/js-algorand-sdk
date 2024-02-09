@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 import assert from 'assert';
+import algosdk from '../src/index.js';
 import * as utils from '../src/utils/utils';
 import * as nacl from '../src/nacl/naclWrappers';
 
@@ -420,5 +421,69 @@ describe('nacl wrapper', () => {
   it('should validate signature length', () => {
     assert.strictEqual(nacl.isValidSignatureLength(6), false);
     assert.strictEqual(nacl.isValidSignatureLength(64), true);
+  });
+});
+
+describe('AlgoAmount', () => {
+  it('should create valid AlgoAmounts', () => {
+    let amount = new algosdk.AlgoAmount({ algos: 1, microAlgos: 2 });
+    assert.strictEqual(amount.toMicroAlgos(), BigInt(1_000_002));
+    assert.strictEqual(amount.wholeAlgosOnly(), BigInt(1));
+    assert.strictEqual(amount.microAlgosOnly(), BigInt(2));
+    assert.strictEqual(amount.toString(), '1.000002');
+
+    amount = new algosdk.AlgoAmount({ algos: 1, microAlgos: 200 });
+    assert.strictEqual(amount.toMicroAlgos(), BigInt(1_000_200));
+    assert.strictEqual(amount.wholeAlgosOnly(), BigInt(1));
+    assert.strictEqual(amount.microAlgosOnly(), BigInt(200));
+    assert.strictEqual(amount.toString(), '1.000200');
+
+    amount = new algosdk.AlgoAmount({ microAlgos: 9_876_543 });
+    assert.strictEqual(amount.toMicroAlgos(), BigInt(9_876_543));
+    assert.strictEqual(amount.wholeAlgosOnly(), BigInt(9));
+    assert.strictEqual(amount.microAlgosOnly(), BigInt(876_543));
+    assert.strictEqual(amount.toString(), '9.876543');
+
+    amount = new algosdk.AlgoAmount({ algos: 100 });
+    assert.strictEqual(amount.toMicroAlgos(), BigInt(100_000_000));
+    assert.strictEqual(amount.wholeAlgosOnly(), BigInt(100));
+    assert.strictEqual(amount.microAlgosOnly(), BigInt(0));
+    assert.strictEqual(amount.toString(), '100.000000');
+
+    amount = new algosdk.AlgoAmount({ algos: 100, microAlgos: 2_000_001 });
+    assert.strictEqual(amount.toMicroAlgos(), BigInt(102_000_001));
+    assert.strictEqual(amount.wholeAlgosOnly(), BigInt(102));
+    assert.strictEqual(amount.microAlgosOnly(), BigInt(1));
+    assert.strictEqual(amount.toString(), '102.000001');
+  });
+
+  it('should error on invalid AlgoAmounts', () => {
+    assert.throws(
+      () =>
+        new algosdk.AlgoAmount({
+          algos: BigInt('0xffffffffffffffff'),
+        }),
+      new Error('MicroAlgos amount is too large: 18446744073709551615000000')
+    );
+
+    assert.throws(
+      () => new algosdk.AlgoAmount({ algos: 1, microAlgos: -1 }),
+      new Error('Value -1 is not a uint64')
+    );
+
+    assert.throws(
+      () => new algosdk.AlgoAmount({ algos: -1, microAlgos: 0 }),
+      new Error('Value -1 is not a uint64')
+    );
+
+    assert.throws(
+      () => new algosdk.AlgoAmount({ algos: 1.5 }),
+      new Error('Value 1.5 is not a safe integer')
+    );
+
+    assert.throws(
+      () => new algosdk.AlgoAmount({ microAlgos: 1.5 }),
+      new Error('Value 1.5 is not a safe integer')
+    );
   });
 });

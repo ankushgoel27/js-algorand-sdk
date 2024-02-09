@@ -375,7 +375,7 @@ export class AlgodClient extends ServiceClient {
    * #### Example
    * ```typescript
    * const suggestedParams = await algodClient.getTransactionParams().do();
-   * const amountInMicroAlgos = algosdk.algosToMicroalgos(2); // 2 Algos
+   * const amountInMicroAlgos = new algosdk.AlgoAmount({ algos: 2 }).toMicroAlgos(); // 2 Algos
    * const unsignedTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
    *   sender: senderAddress,
    *   receiver: receiverAddress,

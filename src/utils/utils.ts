@@ -184,9 +184,11 @@ export function ensureBigInt(value: unknown): bigint {
   throw new Error(`Unexpected type ${typeof value}, ${value}`);
 }
 
+export const MAX_UINT_64 = BigInt('0xffffffffffffffff');
+
 export function ensureUint64(value: unknown): bigint {
   const bigIntValue = ensureBigInt(value);
-  if (bigIntValue < 0 || bigIntValue > BigInt('0xffffffffffffffff')) {
+  if (bigIntValue < 0 || bigIntValue > MAX_UINT_64) {
     throw new Error(`Value ${bigIntValue} is not a uint64`);
   }
   return bigIntValue;
