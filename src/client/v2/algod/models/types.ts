@@ -128,6 +128,23 @@ export class Account extends BaseModel {
   public createdAssets?: Asset[];
 
   /**
+   * Whether or not the account can receive block incentives if its balance is in
+   * range at proposal time.
+   */
+  public incentiveEligible?: boolean;
+
+  /**
+   * The round in which this account last went online, or explicitly renewed their
+   * online status.
+   */
+  public lastHeartbeat?: number | bigint;
+
+  /**
+   * The round in which this account last proposed the block.
+   */
+  public lastProposed?: number | bigint;
+
+  /**
    * AccountParticipation describes the parameters used by this account in consensus
    * protocol.
    */
@@ -197,6 +214,11 @@ export class Account extends BaseModel {
    * Note: the raw account uses `map[int] -> AppParams` for this type.
    * @param createdAssets - (apar) parameters of assets created by this account.
    * Note: the raw account uses `map[int] -> Asset` for this type.
+   * @param incentiveEligible - Whether or not the account can receive block incentives if its balance is in
+   * range at proposal time.
+   * @param lastHeartbeat - The round in which this account last went online, or explicitly renewed their
+   * online status.
+   * @param lastProposed - The round in which this account last proposed the block.
    * @param participation - AccountParticipation describes the parameters used by this account in consensus
    * protocol.
    * @param rewardBase - (ebase) used as part of the rewards computation. Only applicable to accounts
@@ -229,6 +251,9 @@ export class Account extends BaseModel {
     authAddr,
     createdApps,
     createdAssets,
+    incentiveEligible,
+    lastHeartbeat,
+    lastProposed,
     participation,
     rewardBase,
     sigType,
@@ -254,6 +279,9 @@ export class Account extends BaseModel {
     authAddr?: string;
     createdApps?: Application[];
     createdAssets?: Asset[];
+    incentiveEligible?: boolean;
+    lastHeartbeat?: number | bigint;
+    lastProposed?: number | bigint;
     participation?: AccountParticipation;
     rewardBase?: number | bigint;
     sigType?: string;
@@ -280,6 +308,9 @@ export class Account extends BaseModel {
     this.authAddr = authAddr;
     this.createdApps = createdApps;
     this.createdAssets = createdAssets;
+    this.incentiveEligible = incentiveEligible;
+    this.lastHeartbeat = lastHeartbeat;
+    this.lastProposed = lastProposed;
     this.participation = participation;
     this.rewardBase = rewardBase;
     this.sigType = sigType;
@@ -306,6 +337,9 @@ export class Account extends BaseModel {
       authAddr: 'auth-addr',
       createdApps: 'created-apps',
       createdAssets: 'created-assets',
+      incentiveEligible: 'incentive-eligible',
+      lastHeartbeat: 'last-heartbeat',
+      lastProposed: 'last-proposed',
       participation: 'participation',
       rewardBase: 'reward-base',
       sigType: 'sig-type',
@@ -394,6 +428,9 @@ export class Account extends BaseModel {
         typeof data['created-assets'] !== 'undefined'
           ? data['created-assets'].map(Asset.from_obj_for_encoding)
           : undefined,
+      incentiveEligible: data['incentive-eligible'],
+      lastHeartbeat: data['last-heartbeat'],
+      lastProposed: data['last-proposed'],
       participation:
         typeof data['participation'] !== 'undefined'
           ? AccountParticipation.from_obj_for_encoding(data['participation'])
